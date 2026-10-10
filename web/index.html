@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ship-it Stats · Boyd's bot fleet</title>
+<style>
+:root{
+  --bg:#070b16;--card:#0f1628;--card2:#141d33;--line:#24304f;--ink:#eef2ff;--dim:#8b9bc4;
+  --acc:#7c5cff;--acc2:#4f7cff;--hot:#ff7a45;--ok:#2fd27a;--gold:#ffc940;--pink:#ff5cad;--cyan:#2ee6d6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:
+  radial-gradient(1100px 520px at 8% -8%,#2a1868 0,transparent 55%),
+  radial-gradient(900px 480px at 100% 0%,#3a1428 0,transparent 50%),
+  radial-gradient(700px 400px at 50% 100%,#0a2a3a 0,transparent 55%),
+  var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 18px 64px}
+h1{font-size:36px;margin:0;letter-spacing:-.6px;font-weight:800}
+h1 b{background:linear-gradient(100deg,#ff7a45 0%,#ffc940 40%,#7c5cff 75%,#2ee6d6 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:18px;margin:0 0 12px;letter-spacing:-.2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sub{color:var(--dim);margin:6px 0 20px;max-width:920px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:linear-gradient(180deg,rgba(255,255,255,.04),transparent),var(--card);
+  border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;inset:auto -20% -40% 40%;height:80%;background:radial-gradient(circle,rgba(124,92,255,.18),transparent 70%);pointer-events:none}
+.kpi .n{font-size:30px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.5px;
+  background:linear-gradient(180deg,#fff,#c8d2f0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi .l{color:var(--dim);font-size:12px;margin-top:2px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.03),transparent),var(--card);
+  border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:16px;overflow:hidden;
+  box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.week{background:linear-gradient(135deg,#1a1240 0%,#1e2a55 45%,#12353f 100%);border:1px solid #4a62b8}
+.week .kpis{grid-template-columns:repeat(6,1fr)}.week .kpi{background:rgba(0,0,0,.28);border-color:rgba(255,255,255,.12)}
+.archive{background:linear-gradient(135deg,#1a1528,#2a1a18 70%);border:1px solid #5a3a2a;padding:12px 16px}
+.archive h2{font-size:15px;margin:0 0 8px;color:#e8c9a8}
+.archive .strip{display:flex;flex-wrap:wrap;gap:6px}
+.archive .chip{font-size:11.5px;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#d4c4b0}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(124,92,255,.2);color:#cbb8ff;border:1px solid rgba(124,92,255,.35)}
+.tag.hot{background:rgba(255,122,69,.18);color:#ffc2a0;border-color:rgba(255,122,69,.4)}
+.tag.ok{background:rgba(47,210,122,.15);color:#9aecc0;border-color:rgba(47,210,122,.35)}
+.hl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.hl>div{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:14px;padding:12px 14px;
+  transition:transform .15s ease,border-color .15s}
+.hl>div:hover{transform:translateY(-1px);border-color:#3a4a78}
+.hl .i{font-size:22px;line-height:1}.hl .t{color:var(--dim);font-size:11.5px;margin-top:4px;text-transform:uppercase;letter-spacing:.4px}
+.hl .v{font-size:20px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}.hl .d{font-size:12.5px;color:#c9d1ea;word-break:break-word;margin-top:2px}
+.streak-banner{display:grid;grid-template-columns:1.1fr 1fr 1.4fr;gap:14px;margin-bottom:14px}
+.streak-card{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.streak-card .big{font-size:42px;font-weight:900;letter-spacing:-1px;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
+.streak-card .lbl{color:var(--dim);font-size:12px;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.streak-card .who{font-size:16px;font-weight:700;margin-top:6px}
+.spark{display:flex;align-items:flex-end;gap:4px;height:72px;margin-top:8px}
+.spark .bar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--cyan),var(--acc));min-height:3px;position:relative}
+.spark .bar:hover{filter:brightness(1.2)}
+.spark .lab{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+td,th{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left;font-size:13.5px}
+th{color:var(--dim);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+td.r,th.r{text-align:right}
+.bar{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--acc),var(--hot))}
+.lb li{display:flex;align-items:center;gap:8px;margin:5px 0}.lb ol{margin:0;padding-left:20px}
+.lb .nm{min-width:110px}.lb .bw{flex:1}.lb .val{min-width:48px;text-align:right;font-weight:700}
+.heat{overflow-x:auto}
+.heat table{border-collapse:separate;border-spacing:2px;width:auto}
+.heat td{width:15px;height:15px;padding:0;border:0;border-radius:3px}
+.heat td.nm{width:auto;white-space:nowrap;padding-right:8px;font-size:12.5px;color:#c9d1ea}
+.heat th{font-size:10px;padding:0 0 4px;border:0;color:var(--dim);writing-mode:vertical-rl;transform:rotate(180deg);height:44px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+select,button{background:#1d2643;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font:inherit}
+.notes li{color:var(--dim);font-size:13px;margin:4px 0}.notes b{color:var(--ink)}
+.chips span{display:inline-block;background:#1a2340;border:1px solid var(--line);border-radius:99px;padding:3px 9px;margin:3px;font-size:12.5px}
+.streak{font-weight:800;color:var(--gold)}
+.foot{color:var(--dim);font-size:12px;text-align:center;margin-top:22px}
+.hot-row td:first-child::after{content:" HOT";font-size:9px;font-weight:800;color:var(--hot);margin-left:6px;letter-spacing:.5px}
+@media (max-width:900px){
+  .kpis,.week .kpis{grid-template-columns:repeat(3,1fr)}
+  .grid2,.grid3,.streak-banner{grid-template-columns:1fr}
+  .hl{grid-template-columns:1fr 1fr}h1{font-size:28px}
+}
+@media (max-width:480px){
+  .wrap{padding:14px 10px 40px}.kpis,.week .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi .n{font-size:24px}.hl{grid-template-columns:1fr}
+  td,th{font-size:12.5px;padding:4px 3px}.hidem{display:none}.lb .nm{min-width:84px}
+}
+/* share card */
+body.cardmode{background:#070b16;width:1200px;height:675px;overflow:hidden}
+.sc{width:1200px;height:675px;padding:40px 50px;background:
+  radial-gradient(900px 500px at 0 0,#3a238f 0,transparent 60%),
+  radial-gradient(700px 500px at 100% 100%,#7a2a10 0,transparent 60%),#070b16;position:relative}
+.sc h1{font-size:50px}.sc .sub{font-size:18px;color:#c9d1ea}
+.sc .big{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.sc .big>div{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px 20px}
+.sc .big .n{font-size:48px;font-weight:900;font-variant-numeric:tabular-nums}
+.sc .big .l{color:#c9d1ea;font-size:16px}
+.sc .hls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;font-size:16px}
+.sc .hls i{color:var(--dim);font-style:normal;font-size:14px}
+.sc .ft{position:absolute;left:50px;right:50px;bottom:28px;color:var(--dim);font-size:15px;display:flex;justify-content:space-between}
+</style></head><body><div id="app" class="wrap">Loading…</div>
+<script>
+const COLORS={blue:"#3b82f6",red:"#ef4444",green:"#22c55e",yellow:"#eab308",gray:"#94a3b8",orange:"#f97316",cyan:"#06b6d4",violet:"#8b5cf6",magenta:"#d946ef",purple:"#8b5cf6",pink:"#ec4899",teal:"#14b8a6"};
+const LABEL={score:"All actions",toolCalls:"Tool calls",routineRuns:"Routine runs",filesWritten:"Files written",msgsSent:"Bot-to-bot msgs sent",msgsReceived:"Msgs received",boydMsgs:"Boyd → bot msgs"};
+const fmt=n=>(n||0).toLocaleString('en-US');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const q=new URLSearchParams(location.search);
+async function load(){if(window.__DATA__)return window.__DATA__;const r=await fetch('data/stats.json',{cache:'no-store'});return r.json();}
+function mb(b){return (b/1e6).toLocaleString('en-US',{maximumFractionDigits:0})}
+
+function countUp(el, target, ms=900){
+  const t0=performance.now(); const end=Number(target)||0;
+  if(end<=0){el.textContent='0';return;}
+  const step=now=>{
+    const p=Math.min(1,(now-t0)/ms);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent=fmt(Math.round(end*eased));
+    if(p<1) requestAnimationFrame(step);
+    else el.textContent=fmt(end);
+  };
+  requestAnimationFrame(step);
+}
+function animateKpis(root){
+  if(!root||!root.querySelectorAll)return;
+  root.querySelectorAll('[data-count]').forEach(el=>{
+    const v=Number(el.getAttribute('data-count'))||0;
+    countUp(el, v, 700+Math.random()*500);
+  });
+}
+
+function card(D){
+  const T=D.totals, W=D.week.totals, A=D.buildNightArchive.totals;
+  document.body.className='cardmode';
+  document.getElementById('app').outerHTML=`<div class="sc"><h1>🚀 <b>Ship-it Stats</b></h1>
+ <div class="sub">This Week · Oct 8–15 · leftover Grok Bot tokens → shipped projects</div>
+ <div class="big">
+  <div><div class="n">${fmt(W.projects)}</div><div class="l">projects on disk this week</div></div>
+  <div><div class="n">${fmt(W.hot)}</div><div class="l">remastered / built since Fri</div></div>
+  <div><div class="n">${fmt(W.loc)}</div><div class="l">lines of code (this week folders)</div></div>
+  <div><div class="n">${fmt(T.toolCalls)}</div><div class="l">fleet tool calls (all-time)</div></div>
+  <div><div class="n">${fmt(T.routineRuns)}</div><div class="l">routine runs</div></div>
+  <div><div class="n">${fmt(A.projects)}</div><div class="l">Build Night Oct 7 ships (archive)</div></div>
+ </div>
+ <div class="hls">${D.highlights.slice(0,3).map(h=>`<div><span>${h.icon}</span> <b>${esc(h.value)}</b> ${esc(h.title.toLowerCase())}<br><i>${esc(h.detail)}</i></div>`).join('')}</div>
+ <div class="ft"><span>Fleet: ${fmt(T.toolCalls)} tool calls · ${fmt(T.msgsSent)} bot-to-bot msgs · week spark ${fmt(D.week.actionsThisWeek||D.week.toolCallsThisWeek)} actions</span><span>${esc(D.generatedAt.slice(0,16).replace('T',' '))} ET</span></div></div>`;
+}
+
+function render(D){
+ if(q.get('view')==='card')return card(D);
+ const bots=Object.values(D.bots),T=D.totals,W=D.week,WT=W.totals,HT=W.hotTotals||{};
+ const A=D.buildNightArchive, metric=q.get('metric')||'score';
+ const byBot={};D.grid.forEach(g=>{(byBot[g.bot]=byBot[g.bot]||{})[g.day]=g});
+ const days=[];{let d=new Date(D.range.first+'T12:00:00');const e=new Date(D.range.last+'T12:00:00');while(d<=e){days.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1);}}
+ const order=bots.slice().sort((a,b)=>sc(b)-sc(a));function sc(b){const t=b.totals;return t.toolCalls+t.routineRuns+t.filesWritten+t.msgsSent}
+ let mx=1;D.grid.forEach(g=>mx=Math.max(mx,g[metric]||0));
+ const cell=v=>{if(!v)return'#121a30';const a=Math.max(.15,Math.sqrt(v/mx));return `rgba(255,${Math.round(200-120*a)},${Math.round(80-40*a)},${a.toFixed(2)})`};
+ const heat=`<table><tr><th style="writing-mode:horizontal-tb;transform:none"></th>${days.map((d,i)=>`<th>${(i%3==0||d==D.range.last)?d.slice(5):''}</th>`).join('')}</tr>${order.map(b=>`<tr><td class="nm"><span class="dot" style="background:${COLORS[b.color]||'#94a3b8'}"></span>${esc(b.name)}</td>${days.map(d=>{const g=(byBot[b.id]||{})[d];const v=g?g[metric]:0;return `<td style="background:${cell(v)}" title="${esc(b.name)} · ${d} · ${LABEL[metric]}: ${v}"></td>`}).join('')}</tr>`).join('')}</table>`;
+ const lb=(m)=>{const rows=bots.filter(b=>b.totals[m]>0).sort((a,b)=>b.totals[m]-a.totals[m]).slice(0,6);const top=rows[0]?rows[0].totals[m]:1;
+  return `<div class="card lb"><h2>${LABEL[m]}</h2>${rows.length?`<ol>${rows.map(b=>`<li><span class="nm">${esc(b.name)}</span><span class="bw"><div class="bar" style="width:${Math.max(3,100*b.totals[m]/top)}%"></div></span><span class="val">${fmt(b.totals[m])}</span></li>`).join('')}</ol>`:'<p class="sub">None measured.</p>'}</div>`};
+ const streakRows=bots.slice().sort((a,b)=>b.streak.longest-a.streak.longest||b.activeDays-a.activeDays).map(b=>`<tr><td><span class="dot" style="background:${COLORS[b.color]||'#94a3b8'}"></span>${esc(b.name)}</td><td class="r streak">${b.streak.longest}d</td><td class="r">${b.streak.current?('🔥 '+b.streak.current+'d'):'–'}</td><td class="r">${b.activeDays}</td><td class="r hidem">${b.bestDay?esc(b.bestDay.day.slice(5))+' ('+b.bestDay.score+')':'–'}</td><td class="r hidem">${b.peakHourET==null?'–':((b.peakHourET%12||12)+(b.peakHourET<12?' AM':' PM'))}</td></tr>`).join('');
+ const projs=W.projects.slice().sort((a,b)=>(b.hot-a.hot)||(b.counts.loc-a.counts.loc));
+ const pmx=Math.max(1,...projs.map(p=>p.counts.loc));
+ const u=W.usage;
+ const spark=W.sparkline||[];
+ const smx=Math.max(1,...spark.map(s=>s.actions||s.toolCalls||0));
+ const SL=D.streakLeaders||{};
+ const dayTot=Object.entries(D.dayTotals);const dmx=Math.max(1,...dayTot.map(x=>x[1]));
+
+ document.getElementById('app').innerHTML=`
+ <h1>🚀 <b>Ship-it Stats</b></h1>
+ <div class="sub">How Boyd's Grok Bot fleet ships — @poteto-style scoreboard. Measured ${esc(D.range.first)} → ${esc(D.range.last)} (${D.range.days} active days, ET). Updated <b>${esc(D.generatedAt.slice(0,16).replace('T',' '))}</b> ET.</div>
+ <div class="kpis">
+  <div class="kpi"><div class="n" data-count="${T.toolCalls}">0</div><div class="l">fleet tool calls</div></div>
+  <div class="kpi"><div class="n" data-count="${T.routineRuns}">0</div><div class="l">routine runs (${fmt(D.routineStatus.ok||0)} ok)</div></div>
+  <div class="kpi"><div class="n" data-count="${T.msgsSent}">0</div><div class="l">bot-to-bot messages</div></div>
+  <div class="kpi"><div class="n" data-count="${T.boydMsgs}">0</div><div class="l">Boyd → bot messages</div></div>
+  <div class="kpi"><div class="n" data-count="${T.filesWritten}">0</div><div class="l">output files written*</div></div>
+  <div class="kpi"><div class="n" data-count="${T.subagentToolCalls}">0</div><div class="l">executor tool calls (${fmt(T.subagentTranscripts)} transcripts)</div></div>
+ </div>
+
+ <div class="card week">
+  <h2>🚀 This Week · Oct 8–15 <span class="tag">since Thu ${esc((W.resetAt||'').slice(0,16).replace('T',' '))} ET reset</span>
+   <span class="tag hot">${fmt(WT.hot)} hot remasters</span>
+   <span class="tag ok">${fmt(WT.hasDist)} with dist</span></h2>
+  <div class="kpis">
+   <div class="kpi"><div class="n" data-count="${WT.projects}">0</div><div class="l">projects touched on disk</div></div>
+   <div class="kpi"><div class="n" data-count="${WT.files}">0</div><div class="l">files (${mb(WT.bytes)} MB)</div></div>
+   <div class="kpi"><div class="n" data-count="${WT.loc}">0</div><div class="l">LOC in ${fmt(WT.codeFiles)} code files</div></div>
+   <div class="kpi"><div class="n" data-count="${WT.screenshots}">0</div><div class="l">screenshots</div></div>
+   <div class="kpi"><div class="n" data-count="${WT.tests}">0</div><div class="l">test files</div></div>
+   <div class="kpi"><div class="n" data-count="${HT.projects||0}">0</div><div class="l">hot · ${fmt(HT.loc||0)} LOC</div></div>
+  </div>
+  ${u?`<div class="sub" style="margin:0 0 10px;color:#d4dcff">Grok Bot weekly: <b>${esc(u.used_pct)}% used</b> vs ~${esc(u.target_pct)}% pace target · reset ${esc(String(u.reset_at||u.reset_date||'')).replace('T',' ').slice(0,16)} · checked ${esc(String(u.checked_at||'').replace('T',' ').slice(0,16))} ET</div>`:''}
+  <div style="max-height:340px;overflow:auto">
+  <table><tr><th>Project</th><th class="r">LOC</th><th class="hidem" style="width:28%"></th><th class="r">Files</th><th class="r">Shots</th><th class="r">Tests</th><th class="r hidem">Dist</th><th class="r hidem">Ready</th><th class="r hidem">Last</th></tr>
+  ${projs.map(p=>`<tr class="${p.hot?'hot-row':''}"><td>${esc(p.name)}</td><td class="r">${fmt(p.counts.loc)}</td><td class="hidem"><div class="bar" style="width:${Math.max(2,100*p.counts.loc/pmx)}%"></div></td><td class="r">${fmt(p.counts.files)}</td><td class="r">${p.counts.screenshots}</td><td class="r">${p.counts.tests}</td><td class="r hidem">${p.hasDist?'✅':'·'}</td><td class="r hidem">${p.ready?'✅':'…'}</td><td class="r hidem">${esc((p.lastMtime||'').slice(5,16).replace('T',' '))}</td></tr>`).join('')}
+  </table></div>
+ </div>
+
+ <div class="card archive">
+  <h2>🛠️ ${esc(A.label)} <span class="tag">${fmt(A.totals.projects)} ships · ${fmt(A.totals.loc)} LOC · snapshot ${esc((A.snapshotAt||'').slice(0,16).replace('T',' '))} ET</span></h2>
+  <div class="sub" style="margin:0 0 8px;font-size:12.5px;color:#cbb8a4">${esc(A.source)}. Live on disk now: ${fmt(A.liveTotals.projects)} folders · ${fmt(A.liveTotals.loc)} LOC · ${fmt(A.liveTotals.hasDist)} with dist.</div>
+  <div class="strip">${(A.names||[]).map(n=>`<span class="chip">${esc(n)}</span>`).join('')}</div>
+ </div>
+
+ <div class="card">
+  <h2>🎬 Highlight reel · streaks &amp; week sparkline</h2>
+  <div class="streak-banner">
+   <div class="streak-card">
+    <div class="lbl">Longest streak</div>
+    <div class="big" data-count="${(SL.longest&&SL.longest.days)||0}">0</div>
+    <div class="who"><span class="dot" style="background:${COLORS[(SL.longest&&SL.longest.color)||'gray']}"></span>${esc((SL.longest&&SL.longest.name)||'—')} <span style="color:var(--dim);font-weight:500;font-size:13px">ended ${esc((SL.longest&&SL.longest.ended)||'—')}</span></div>
+   </div>
+   <div class="streak-card">
+    <div class="lbl">Current streak leader</div>
+    <div class="big" data-count="${(SL.current&&SL.current.days)||0}">0</div>
+    <div class="who"><span class="dot" style="background:${COLORS[(SL.current&&SL.current.color)||'gray']}"></span>${esc((SL.current&&SL.current.name)||'—')}</div>
+   </div>
+   <div class="streak-card">
+    <div class="lbl">Fleet actions this week (daily sparkline)</div>
+    <div class="spark">${spark.map(s=>`<div class="bar" title="${s.day}: ${s.actions||0} actions (${s.toolCalls||0} tool calls)" style="height:${Math.max(3,100*(s.actions||s.toolCalls||0)/smx)}%"></div>`).join('')}</div>
+    <div class="lab"><span>${esc(spark.length?spark[0].day:'')}</span><span><b>${fmt(W.actionsThisWeek||W.toolCallsThisWeek)}</b> actions</span><span>${esc(spark.length?spark[spark.length-1].day:'')}</span></div>
+   </div>
+  </div>
+  <div class="hl">${D.highlights.map(h=>`<div><div class="i">${h.icon}</div><div class="t">${esc(h.title)}</div><div class="v">${esc(h.value)}</div><div class="d">${esc(h.detail)}</div></div>`).join('')}</div>
+ </div>
+
+ <div class="card heat"><h2>📅 Bots × days <select id="metric">${Object.keys(LABEL).map(k=>`<option value="${k}" ${k==metric?'selected':''}>${LABEL[k]}</option>`).join('')}</select></h2>${heat}</div>
+ <div class="grid3">${lb('toolCalls')}${lb('routineRuns')}${lb('msgsSent')}</div>
+ <div class="grid2"><div class="card"><h2>📆 Streaks by bot</h2><table><tr><th>Bot</th><th class="r">Longest</th><th class="r">Current</th><th class="r">Active days</th><th class="r hidem">Best day</th><th class="r hidem">Peak hour</th></tr>${streakRows}</table></div>
+  <div><div class="card"><h2>📈 Fleet actions per day</h2><div style="display:flex;align-items:flex-end;gap:2px;height:120px">${dayTot.map(([d,v])=>`<div title="${d}: ${v}" style="flex:1;height:${Math.max(2,100*v/dmx)}%;background:linear-gradient(180deg,var(--hot),var(--acc));border-radius:3px 3px 0 0"></div>`).join('')}</div><div class="sub" style="margin:6px 0 0;font-size:12px">${esc(dayTot.length?dayTot[0][0]:'')} → ${esc(dayTot.length?dayTot[dayTot.length-1][0]:'')} · only days with activity shown</div></div>
+  ${lb('filesWritten')}</div></div>
+ <div class="grid2"><div class="card"><h2>🧰 Top connector tools</h2><div class="chips">${D.topTools.map(([k,v])=>`<span>${esc(k)} · <b>${fmt(v)}</b></span>`).join('')}</div><h2 style="margin-top:14px">🔌 By app</h2><div class="chips">${D.topApps.map(([k,v])=>`<span>${esc(k)} · <b>${fmt(v)}</b></span>`).join('')}</div></div>
+  <div class="card"><h2>✉️ Who talks to whom</h2><div class="chips">${D.topPairs.map(([k,v])=>`<span>${esc(k)} · <b>${v}</b></span>`).join('')}</div><h2 style="margin-top:14px">🤖 Executor sub-agents: top tools</h2><div class="chips">${D.subagents.topTools.map(([k,v])=>`<span>${esc(k)} · <b>${fmt(v)}</b></span>`).join('')}</div></div></div>
+ <div class="card notes"><h2>📏 How it's measured (and what isn't)</h2><ul>${Object.entries(D.notes).map(([k,v])=>`<li><b>${esc(k)}:</b> ${esc(v)}</li>`).join('')}</ul></div>
+ <div class="foot">Read-only over /home/box/agent-data and /workspace/tokenmax · metadata only, no message contents · TokenMax remaster Sat Oct 10</div>`;
+ const s=document.getElementById('metric');s&&s.addEventListener('change',()=>{q.set('metric',s.value);history.replaceState(null,'','?'+q);render(D)});
+ animateKpis(document.getElementById('app'));
+}
+load().then(D=>{try{render(D)}catch(e){document.getElementById('app').textContent='Render error: '+e+'\n'+(e&&e.stack||'');console.error(e)}}).catch(e=>{document.getElementById('app').textContent='Could not load stats: '+e});
+</script></body></html>
