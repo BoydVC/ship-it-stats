@@ -35,7 +35,7 @@ SCRATCH = {"build", "work", "tmp", "pieces", "frames", "render", "cache", "clips
 # Projects that shipped on Build Night Oct 7 (from the Oct 7 6:04 PM ET snapshot archived in TokenMax-Oct7-build.zip).
 # File mtimes were bulk-rewritten by the Oct 8 ~8:11 PM ET unpack, so live mtimes can no longer recover Oct 7.
 OCT7_ARCHIVE_NAMES = [
-    "agent-playbook", "ai-ops-atlas", "bookmark-atlas", "bot-island", "bot-island-3d", "boyd-wall",
+    "agent-playbook", "ai-ops-atlas", "bookmark-atlas", "bot-island", "bot-island-3d", "family-wall",
     "chelsea-matchday", "chelsea-time-machine", "chopsticks", "docket-pilot", "explainer-studio",
     "family-week", "fleet-doctor", "fleet-funnies", "fleet-yearbook", "fridge-board", "hspt-quest",
     "hub", "llm-box-advisor", "math-arcade", "mission-control", "orioles-2026", "pods-radio",
