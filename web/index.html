@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ship-it Stats · Boyd's bot fleet</title>
+<title>Ship-it Stats · Alex's bot fleet</title>
 <style>
 :root{
   --bg:#070b16;--card:#0f1628;--card2:#141d33;--line:#24304f;--ink:#eef2ff;--dim:#8b9bc4;
@@ -99,7 +99,7 @@ body.cardmode{background:#070b16;width:1200px;height:675px;overflow:hidden}
 </style></head><body><div id="app" class="wrap">Loading…</div>
 <script>
 const COLORS={blue:"#3b82f6",red:"#ef4444",green:"#22c55e",yellow:"#eab308",gray:"#94a3b8",orange:"#f97316",cyan:"#06b6d4",violet:"#8b5cf6",magenta:"#d946ef",purple:"#8b5cf6",pink:"#ec4899",teal:"#14b8a6"};
-const LABEL={score:"All actions",toolCalls:"Tool calls",routineRuns:"Routine runs",filesWritten:"Files written",msgsSent:"Bot-to-bot msgs sent",msgsReceived:"Msgs received",boydMsgs:"Boyd → bot msgs"};
+const LABEL={score:"All actions",toolCalls:"Tool calls",routineRuns:"Routine runs",filesWritten:"Files written",msgsSent:"Bot-to-bot msgs sent",msgsReceived:"Msgs received",boydMsgs:"Alex → bot msgs"};
 const fmt=n=>(n||0).toLocaleString('en-US');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const q=new URLSearchParams(location.search);
@@ -166,12 +166,12 @@ function render(D){
 
  document.getElementById('app').innerHTML=`
  <h1>🚀 <b>Ship-it Stats</b></h1>
- <div class="sub">How Boyd's Grok Bot fleet ships — @poteto-style scoreboard. Measured ${esc(D.range.first)} → ${esc(D.range.last)} (${D.range.days} active days, ET). Updated <b>${esc(D.generatedAt.slice(0,16).replace('T',' '))}</b> ET.</div>
+ <div class="sub">How Alex's Grok Bot fleet ships — @poteto-style scoreboard. Measured ${esc(D.range.first)} → ${esc(D.range.last)} (${D.range.days} active days, ET). Updated <b>${esc(D.generatedAt.slice(0,16).replace('T',' '))}</b> ET.</div>
  <div class="kpis">
   <div class="kpi"><div class="n" data-count="${T.toolCalls}">0</div><div class="l">fleet tool calls</div></div>
   <div class="kpi"><div class="n" data-count="${T.routineRuns}">0</div><div class="l">routine runs (${fmt(D.routineStatus.ok||0)} ok)</div></div>
   <div class="kpi"><div class="n" data-count="${T.msgsSent}">0</div><div class="l">bot-to-bot messages</div></div>
-  <div class="kpi"><div class="n" data-count="${T.boydMsgs}">0</div><div class="l">Boyd → bot messages</div></div>
+  <div class="kpi"><div class="n" data-count="${T.boydMsgs}">0</div><div class="l">Alex → bot messages</div></div>
   <div class="kpi"><div class="n" data-count="${T.filesWritten}">0</div><div class="l">output files written*</div></div>
   <div class="kpi"><div class="n" data-count="${T.subagentToolCalls}">0</div><div class="l">executor tool calls (${fmt(T.subagentTranscripts)} transcripts)</div></div>
  </div>

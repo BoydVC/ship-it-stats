@@ -1,6 +1,6 @@
 # 🚀 Ship-it Stats
 
-**A @poteto-style "how I shipped N PRs" scoreboard for Boyd's own agent work.** It charts tool calls, routine runs,
+**A @poteto-style "how I shipped N PRs" scoreboard for Alex's own agent work.** It charts tool calls, routine runs,
 files written and bot-to-bot messages per bot per day, with streaks, leaderboards, a highlight reel, and a live
 **🚀 This Week (Oct 8–15)** panel for everything TokenMax touched since the Thu ~7:42 PM ET Grok Bot weekly reset.
 Inspired by @poteto's "here's how i shipped 2,500 PRs last month" (https://x.com/poteto/status/2102050467505430555);
@@ -42,7 +42,7 @@ Python 3 stdlib only. `?metric=toolCalls` (or routineRuns, filesWritten, msgsSen
 
 ## What's on the page
 
-* **Headline numbers** (count-up): fleet tool calls, routine runs, bot-to-bot messages, Boyd → bot messages,
+* **Headline numbers** (count-up): fleet tool calls, routine runs, bot-to-bot messages, Alex → bot messages,
   output files written, executor sub-agent tool calls.
 * **This Week · Oct 8–15**: projects touched since reset, hot remasters, LOC/files/shots/tests/dist, usage.json pace.
 * **Build Night archive strip**: Oct 7 ships still named on disk + frozen snapshot totals.
@@ -56,7 +56,7 @@ Python 3 stdlib only. `?metric=toolCalls` (or routineRuns, filesWritten, msgsSen
 |---|---|
 | Tool calls | each bot's `audit.jsonl` (MCP + shell + browser + computer-use), via `bot-island/collect.py` |
 | Routine runs | every entry in `automations/*/runs.json` |
-| Bot-to-bot / Boyd messages | who/when metadata from each bot's transcript store (no contents) |
+| Bot-to-bot / Alex messages | who/when metadata from each bot's transcript store (no contents) |
 | Files written | Bot Island's output-folder mapping, 1 per minute, last 30 days |
 | Executor tool calls | `tool_use` names counted in `/home/box/agent-data/agent-transcripts/sand-subagent-*/*.jsonl` |
 | This Week | `hub/scan.py` `project()` + newest-file mtime ≥ Thu Oct 8 19:42 ET |
@@ -73,6 +73,6 @@ nothing is written into those folders. The smoke test checks that.
 
 ---
 ## Repo notes
-- **Built:** 2026-10-07, by TokenMax (Boyd's Grok Bot) on the Grok Bot box.
+- **Built:** 2026-10-07, by TokenMax (Alex's Grok Bot) on the Grok Bot box.
 - **Run:** `./run.sh` (then open the localhost URL it prints).
 - Imported from `/workspace/tokenmax/ship-it-stats` on Oct 23, 2026. node_modules, virtualenvs, logs and files over 20 MB were left out.
